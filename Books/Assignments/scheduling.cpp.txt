@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+struct Process {
+    int id;
+    int arrival_time;
+    int burst_time;
+    int remaining_time;
+};
+
+void printGanttChart(const vector<pair<int, int>>& gantt) {
+    cout << "Gantt Chart:" << endl;
+
+    cout << "+";
+    for (size_t i = 0; i < gantt.size(); ++i) {
+        for (int j = 0; j < gantt[i].second; ++j) {
+            cout << "-";
+        }
+        cout << "+";
+    }
+    cout << endl;
+
+    cout << "|";
+    for (size_t i = 0; i < gantt.size(); ++i) {
+        cout << "P" << gantt[i].first << "|";
+    }
+    cout << endl;
+
+    cout << "+";
+    for (size_t i = 0; i < gantt.size(); ++i) {
+        for (int j = 0; j < gantt[i].second; ++j) {
+            cout << "-";
+        }
+        cout << "+";
+    }
+    cout << endl;
+
+    cout << "Timeline: " << endl;
+    int startTime = 0;
+    for (size_t i = 0; i < gantt.size(); ++i) {
+        cout << "P" << gantt[i].first << ": ";
+        for (int j = 0; j < gantt[i].second; ++j) {
+            cout << startTime++ << "-";
+        }
+        cout << startTime << endl;
+    }
+}
+
