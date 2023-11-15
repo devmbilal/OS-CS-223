@@ -49,4 +49,22 @@ void printGanttChart(const vector<pair<int, int>>& gantt) {
         cout << startTime << endl;
     }
 }
+vector<pair<int, int>> sjfNonPreemptive(vector<Process>& processes) {
+    sort(processes.begin(), processes.end(), [](const Process& a, const Process& b) {
+        return a.arrival_time < b.arrival_time || (a.arrival_time == b.arrival_time && a.burst_time < b.burst_time);
+    });
+
+    vector<pair<int, int>> gantt;
+    int currentTime = 0;
+
+    for (const Process& p : processes) {
+        if (currentTime < p.arrival_time) {
+            currentTime = p.arrival_time;
+        }
+        gantt.push_back({p.id, p.burst_time});
+        currentTime += p.burst_time;
+    }
+
+    return gantt;
+}
 
