@@ -68,3 +68,41 @@ vector<pair<int, int>> sjfNonPreemptive(vector<Process>& processes) {
     return gantt;
 }
 
+vector<pair<int, int>> sjfPreemptive(vector<Process>& processes) {
+    sort(processes.begin(), processes.end(), [](const Process& a, const Process& b) {
+        return a.arrival_time < b.arrival_time || (a.arrival_time == b.arrival_time && a.burst_time < b.burst_time);
+    });
+
+    vector<pair<int, int>> gantt;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq; // min heap
+
+    int currentTime = 0;
+    size_t completedProcesses = 0;
+
+    while (completedProcesses < processes.size()) {
+        for (size_t i = 0; i < processes.size(); ++i) {
+            if (processes[i].arrival_time <= currentTime && processes[i].burst_time > 0) {
+                pq.push({processes[i].burst_time, processes[i].id});
+            }
+        }
+
+        if (!pq.empty()) {
+            auto shortest = pq.top();
+            pq.pop();
+
+            gantt.push_back({shortest.second, 1});
+            processes[shortest.second - 1].burst_time -= 1;
+            currentTime += 1;
+
+            if (processes[shortest.second - 1].burst_time == 0) {
+                completedProcesses++;
+            }
+        } else {
+            currentTime++;
+            gantt.push_back({0, 1});
+        }
+    }
+
+    return gantt;
+}
+
