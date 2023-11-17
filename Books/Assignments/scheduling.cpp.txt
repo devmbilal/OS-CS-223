@@ -106,3 +106,43 @@ vector<pair<int, int>> sjfPreemptive(vector<Process>& processes) {
     return gantt;
 }
 
+vector<pair<int, int>> roundRobin(vector<Process>& processes, int quantum) {
+    vector<pair<int, int>> gantt;
+    queue<int> readyQueue;
+
+    int currentTime = 0;
+    int remainingProcesses = processes.size();
+    int* remainingTime = new int[processes.size()];
+
+    for (size_t i = 0; i < processes.size(); ++i) {
+        readyQueue.push(processes[i].id);
+        remainingTime[i] = processes[i].burst_time;
+    }
+
+    while (remainingProcesses > 0) {
+        int currentProcess = readyQueue.front();
+        readyQueue.pop();
+
+        int executionTime = min(quantum, remainingTime[currentProcess - 1]);
+        gantt.push_back({currentProcess, executionTime});
+
+        remainingTime[currentProcess - 1] -= executionTime;
+        currentTime += executionTime;
+
+        for (size_t i = 0; i < processes.size(); ++i) {
+            if (processes[i].arrival_time <= currentTime && remainingTime[i] > 0 && processes[i].id != currentProcess) {
+                readyQueue.push(processes[i].id);
+            }
+        }
+
+        if (remainingTime[currentProcess - 1] > 0) {
+            readyQueue.push(currentProcess);
+        } else {
+            remainingProcesses--;
+        }
+    }
+
+    delete[] remainingTime;
+    return gantt;
+}
+
