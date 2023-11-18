@@ -146,3 +146,44 @@ vector<pair<int, int>> roundRobin(vector<Process>& processes, int quantum) {
     return gantt;
 }
 
+int main() {
+    int choice;
+    cout << "Select the scheduling algorithm:" << endl;
+    cout << "1. SJF (Non-preemptive)" << endl;
+    cout << "2. SJF (Preemptive)" << endl;
+    cout << "3. Round Robin" << endl;
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    vector<Process> processes = {
+        {1, 0, 5},
+        {2, 1, 3},
+        {3, 2, 8},
+        {4, 3, 6}
+        // Add more processes here if needed
+    };
+
+    vector<pair<int, int>> gantt;
+
+    switch (choice) {
+        case 1:
+            gantt = sjfNonPreemptive(processes);
+            break;
+        case 2:
+            gantt = sjfPreemptive(processes);
+            break;
+        case 3:
+            int quantum;
+            cout << "Enter the time quantum for Round Robin: ";
+            cin >> quantum;
+            gantt = roundRobin(processes, quantum);
+            break;
+        default:
+            cout << "Invalid choice!" << endl;
+            return 1;
+    }
+
+    printGanttChart(gantt);
+
+    return 0;
+}
