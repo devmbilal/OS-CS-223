@@ -19,3 +19,26 @@ void *writer(void *arg) {
     }
     pthread_exit(NULL);
 }
+
+void *reader(void *arg) {
+    while (true) {
+        sem_wait(&mutex);
+        readerCount++;
+        if (readerCount == 1) {
+            sem_wait(&rw_mutex);
+        }
+        sem_post(&mutex);
+
+        cout << "Data read by reader: " << data << endl;
+
+        sem_wait(&mutex);
+        readerCount--;
+        if (readerCount == 0) {
+            sem_post(&rw_mutex);
+        }
+        sem_post(&mutex);
+        // Simulating reader delay
+        sleep(1);
+    }
+    pthread_exit(NULL);
+}
