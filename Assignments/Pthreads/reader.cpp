@@ -42,3 +42,27 @@ void *reader(void *arg) {
     }
     pthread_exit(NULL);
 }
+
+int main() {
+    pthread_t writerThread, readerThread[5];
+
+    // Initializing semaphores
+    sem_init(&mutex, 0, 1);
+    sem_init(&rw_mutex, 0, 1);
+
+    pthread_create(&writerThread, NULL, writer, NULL);
+    for (int i = 0; i < 5; i++) {
+        pthread_create(&readerThread[i], NULL, reader, NULL);
+    }
+
+    pthread_join(writerThread, NULL);
+    for (int i = 0; i < 5; i++) {
+        pthread_join(readerThread[i], NULL);
+    }
+
+    // Destroying semaphores
+    sem_destroy(&mutex);
+    sem_destroy(&rw_mutex);
+
+    return 0;
+}
