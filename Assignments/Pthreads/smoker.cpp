@@ -30,3 +30,24 @@ void *agent(void *arg) {
     }
     pthread_exit(NULL);
 }
+
+
+void *smoker_tobacco(void *arg) {
+    while (true) {
+        sem_wait(&tobaccoSem);
+        sem_wait(&mutex);
+        if (isPaper) {
+            isPaper = false;
+            sem_post(&agentSem);
+        } else if (isMatch) {
+            isMatch = false;
+            sem_post(&agentSem);
+        } else {
+            isTobacco = true;
+        }
+        sem_post(&mutex);
+        cout << "Smoker with tobacco is smoking\n";
+        sleep(1);
+    }
+    pthread_exit(NULL);
+}
