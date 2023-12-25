@@ -51,3 +51,32 @@ void *smoker_tobacco(void *arg) {
     }
     pthread_exit(NULL);
 }
+
+
+// Implement similar functions for other smokers
+
+int main() {
+    pthread_t agentThread, smoker_tobaccoThread, smoker_paperThread, smoker_matchThread;
+
+    sem_init(&agentSem, 0, 1);
+    sem_init(&tobaccoSem, 0, 0);
+    sem_init(&paperSem, 0, 0);
+    sem_init(&matchSem, 0, 0);
+    sem_init(&mutex, 0, 1);
+
+    pthread_create(&agentThread, NULL, agent, NULL);
+    pthread_create(&smoker_tobaccoThread, NULL, smoker_tobacco, NULL);
+    // Create threads for other smokers
+
+    pthread_join(agentThread, NULL);
+    pthread_join(smoker_tobaccoThread, NULL);
+    // Join other smoker threads
+
+    sem_destroy(&agentSem);
+    sem_destroy(&tobaccoSem);
+    sem_destroy(&paperSem);
+    sem_destroy(&matchSem);
+    sem_destroy(&mutex);
+
+    return 0;
+}
