@@ -33,3 +33,27 @@ void *philosopher(void *arg) {
     }
     pthread_exit(NULL);
 }
+
+int main() {
+    pthread_t philosophers[N];
+    int philosopherIDs[N];
+
+    for (int i = 0; i < N; i++) {
+        sem_init(&chopsticks[i], 0, 1);
+        philosopherIDs[i] = i;
+    }
+
+    for (int i = 0; i < N; i++) {
+        pthread_create(&philosophers[i], NULL, philosopher, &philosopherIDs[i]);
+    }
+
+    for (int i = 0; i < N; i++) {
+        pthread_join(philosophers[i], NULL);
+    }
+
+    for (int i = 0; i < N; i++) {
+        sem_destroy(&chopsticks[i]);
+    }
+
+    return 0;
+}
